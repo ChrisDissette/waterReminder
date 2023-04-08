@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Water Reminder</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 2rem;
+    }
+
+    button {
+      padding: 1rem;
+      font-size: 1.2rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 2rem;
+      margin-right: 1rem;
+    }
+
+    button:hover {
+      background-color: #3E8E41;
+    }
+
+    audio {
+      display: none;
+    }
+
+    #timer {
+      font-size: 3rem;
+      margin-top: 2rem;
+    }
+
+    #count {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    #stop {
+      padding: 1rem;
+      font-size: 1.2rem;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 2rem;
+    }
+
+    #stop:hover {
+      background-color: #8B0000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Drink Water Reminder</h1>
+  <button id="start">Start Timer</button>
+  <button id="stop">Stop Timer</button>
+  <div id="timer"></div>
+  <div id="count"></div>
+  <audio id="sound">
+    <source src="bell.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    // Set the initial time to 20 minutes
+    let timeInMinutes = 20;
+    let timeInSeconds = timeInMinutes * 60;
+
+    // Get references to the button, audio, and timer elements
+    const startButton = document.getElementById('start');
+    const stopButton = document.getElementById('stop');
+    const sound = document.getElementById('sound');
+    const timerDisplay = document.getElementById('timer');
+    const countDisplay = document.getElementById('count');
+
+    // Define a variable to keep track of the number of times the timer has hit 0
+    let count = 0;
+
+    // Define a variable to hold the interval ID of the timer
+    let timer;
+
+    // Define a function to play the sound
+    function playSound() {
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    // Define a function to update the timer display
+    function updateTimerDisplay(timeInSeconds) {
+      const minutes = Math.floor(timeInSeconds / 60);
+      const seconds = timeInSeconds % 60;
+      timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      document.title = `Drink Water Reminder (${minutes}:${seconds.toString().padStart(2, '0')})`;
+    }
+
+    // Define a function to update the count display
+    function updateCountDisplay(count) {
+      countDisplay.textContent = `You have been reminded to drink water ${count} times.`;
+    }
+
+    // Define a function to start the timer
+    function startTimer() {
+      // Disable the start button and enable the stop button
+      startButton.disabled = true;
+      stopButton.disabled = false;
+
+      // Update the timer display
+      updateTimerDisplay(timeInSeconds);
+
+      // Start the countdown
+      timer = setInterval(() => {
+        // Decrement the time remaining
+        timeInSeconds--;
+    
+
+        // Update the timer display
+        updateTimerDisplay(timeInSeconds);
+
+        // If the time remaining is 0, play the sound, reset the time, and increment the count
+        if (timeInSeconds === 0) {
+            playSound();
+            timeInSeconds = timeInMinutes * 60;
+            count++;
+            updateCountDisplay(count);
+            }
+        }, 1000);
+    }
+
+    // Define a function to stop the timer
+    function stopTimer() {
+    // Stop the timer interval
+    clearInterval(timer);
+
+    // Reset the time remaining
+    timeInSeconds = timeInMinutes * 60;
+
+    // Reset the count
+    count = 0;
+
+    // Update the timer and count displays
+    updateTimerDisplay(timeInSeconds);
+    updateCountDisplay(count);
+
+    // Enable the start button and disable the stop button
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    }
+
+    // Add click event listeners to the start and stop buttons
+    startButton.addEventListener('click', startTimer);
+    stopButton.addEventListener('click', stopTimer);
+    </script>
+</body>
+</html>
+
